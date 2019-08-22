@@ -4,7 +4,7 @@ library(dplyr)
 
 #dowload data 
 url <- "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
-dest_file <- paste(getwd(), "/data.zip")
+dest_file <- paste(getwd(), "/data.zip", sep = "")
 download.file(url = url, destfile = dest_file)
 
 #unzip data; functions returns path names of unzipped files
@@ -30,9 +30,9 @@ colnames(data_final) <- c("BodyAcc-mean()-X", "BodyAcc-std()-X","BodyAcc-mean()-
 
 #Substitute activty codes by meaningfull values                      
 activities_names <- read.table(files[1])
-mapply(function(x,y) {data_final$Activity <<- gsub(x,y,data_final$Activity)}, activities_names$m, activities_names$V2)
+mapply(function(x,y) {data_final$Activity <<- gsub(x,y,data_final$Activity)}, activities_names$V1, activities_names$V2)
 
 #summarize dataset and export to .txt file
 tidy_set <- group_by(data_final, Activity, Subject)
-tidy_set <- summarize_all(tidy_set, funs(mean))
-write.table(tidy_set,paste(getwd(),"/tidy_set.txt"),row.names=FALSE)
+tidy_set <- summarize_all(tidy_set, list(mean = mean))
+write.table(tidy_set,paste(getwd(),"/tidy_set.txt",sep = ""),row.names=FALSE,)
